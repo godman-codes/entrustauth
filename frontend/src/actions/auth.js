@@ -77,11 +77,11 @@ export const login = (email, password) => async (dispatch) => {
       });
       console.log(res);
    } catch (err) {
+      console.log(err.response.data.Message);
       dispatch({
          type: LOGIN_FAIL,
          payload: err.response.data.Message,
       });
-      console.log(err.response.data.Message);
    }
 };
 export const MFAValidation = (userData) => async (dispatch) => {

@@ -41,6 +41,13 @@ const Step3 = ({ tokenInfo, setQr, qr }) => {
                   </button>
                </li>
                <li>
+                  if your using the phone you want to register entrust app on
+                  click this:
+                  <a href={tokenInfo.qrCodeUrl} target="_blank">
+                     Link
+                  </a>
+               </li>
+               <li>
                   After successfully scanning the QR code, the app may prompt
                   you to enter a QR code password:{" "}
                   <span>{tokenInfo.qrCodePassword}</span>

@@ -40,8 +40,7 @@ const Login = ({ login, initialLogin, initialLoginErrorMessage, user }) => {
       } else {
          setShowSnackbar(false);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [initialLogin, initialLoginErrorMessage]);
+   }, [initialLogin]);
 
    return (
       <Wrapper>

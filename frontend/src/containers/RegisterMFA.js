@@ -20,13 +20,14 @@ const RegisterMFA = ({
    User2FAActivationStart,
    tokenActivationStart,
    User2FAActivationComplete,
+   user2FARegistrationComplete,
 }) => {
    const [loading, setLoading] = useState(false);
+
    const navigate = useNavigate();
    const [processTracker, setProcessTracker] = useState(0);
    const [qr, setQR] = useState(false);
 
-   const authState = useSelector((state) => state.auth);
    const introduction = {
       Title: "Introduction",
       value: () => <Step1 registerUser={registerUser} loading={loading} />,
@@ -36,7 +37,13 @@ const RegisterMFA = ({
    // const [showPrevious, setShowPrev] = useState(false);
    const GetStarted = {
       Title: "Get Started",
-      value: Step2,
+      value: () => {
+         if (user2FARegistrationComplete && tokenActivationStart) {
+            return <Step2 />;
+         } else {
+            navigate("/error");
+         }
+      },
    };
    const LinkAccount = {
       Title: "Link Account",
@@ -54,10 +61,6 @@ const RegisterMFA = ({
       if (processTracker < 3) {
          setProcessTracker(processTracker + 1);
          console.log(processTracker);
-         // if (processTracker === 1) {
-         //    console.log("activating");
-         //    User2FAActivation(user.userId);
-         // }
       }
    };
    const OpenAndClose = () => {
@@ -69,26 +72,24 @@ const RegisterMFA = ({
          setProcessTracker(processTracker - 1);
       }
    };
+
    const registerUser = async () => {
       console.log(user);
       console.log(user.userId);
-      if (user.entrustUser) {
-         setLoading(true);
+      setLoading(true);
+      if (user.entrustUser && user.tokenCreated) {
          await User2FAActivationStart(user.userId);
          setLoading(false);
          Next();
       } else {
-         setLoading(true);
-
          await RegisterUserMFA(user.userId);
+         console.log(user2FARegistrationComplete);
+         await User2FAActivationStart(user.userId);
          setLoading(false);
-         if (!tokenActivationStart) {
-            navigate("/error");
-         } else {
-            setProcessTracker(processTracker + 1);
-         }
+         setProcessTracker(processTracker + 1);
       }
    };
+
    const CompleteMFA = async (regCode) => {
       setLoading(true);
       console.log(tokenActivationStart);
@@ -104,24 +105,6 @@ const RegisterMFA = ({
          navigate("/error");
       }
    };
-
-   // const User2FAActivation = async () => {
-   //    console.log("inside token");
-   //    console.log(user);
-   //    await User2FAActivationStart(user.userId);
-   //    if (tokenActivationStart) {
-   //       navigate("/validateMFA");
-   //    }
-   // };
-   // useEffect(() => {
-
-   // }, []);
-
-   // useEffect(() => {
-   //    if (authState.user2FARegistrationComplete) {
-   //       if (!authState.tokenActivationStart) return User2FAActivationStart();
-   //    }
-   // }, []);
 
    return (
       <Wrapper>

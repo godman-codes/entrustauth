@@ -19,17 +19,31 @@ import {
 import axios from "axios";
 
 export const signup =
-   (name, email, password, re_password) => async (dispatch) => {
+   (firstName, lastName, username, email, password, confirmPassword) =>
+   async (dispatch) => {
       const config = {
          headers: {
             "Content-Type": "application/json",
          },
       };
-      const body = JSON.stringify({ email, name, password, re_password });
-      // console.log(body);
+      const roles = ["developer"];
+      const body = JSON.stringify({
+         firstName,
+         lastName,
+         username,
+         email,
+         password,
+         confirmPassword,
+         roles,
+      });
+      console.log(body);
       try {
          await axios
-            .post(`${process.env.REACT_APP_API_URL}/auth/users/`, body, config)
+            .post(
+               `${process.env.REACT_APP_API_URL}/authentication/register`,
+               body,
+               config
+            )
             .then((response) => {
                // response.json();
                console.log(response);
@@ -37,24 +51,13 @@ export const signup =
                   type: SIGNUP_SUCCESS,
                   payload: response.data,
                });
-            })
-            .catch((error) => {
-               console.log(error.message);
-               if (error.message) {
-                  dispatch({
-                     type: SIGNUP_FAIL,
-                     payload: error.message,
-                  });
-               }
-               dispatch({
-                  type: SIGNUP_FAIL,
-                  payload: error.response.data,
-               });
             });
       } catch (err) {
-         console.log("this is the error: " + err);
-         dispatch({ type: SIGNUP_FAIL });
-         throw err;
+         console.log(err.response.data);
+         dispatch({
+            type: SIGNUP_FAIL,
+            payload: err.response.data,
+         });
       }
    };
 
@@ -205,7 +208,7 @@ export const verify = (uid, token) => async (dispatch) => {
    const body = JSON.stringify({ uid, token });
    try {
       await axios.post(
-         `${process.env.REACT_APP_API_URL}/auth/users/activation/`,
+         `${process.env.REACT_APP_API_URL}/authentication/ActivateAccount`,
          body,
          config
       );

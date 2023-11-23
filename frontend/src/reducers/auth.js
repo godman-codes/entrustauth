@@ -1,4 +1,3 @@
-import { MFAvalidation } from "../actions/auth";
 import {
    ACTIVATION_SUCCESS,
    ACTIVATION_FAIL,
@@ -31,6 +30,15 @@ const initialState = {
    tokenActivationComplete: false,
    ServerError: false,
 };
+const errorhandler = (pay) => {
+   if (pay.DuplicateEmail) {
+      return "Email already exists";
+   } else if (pay.DuplicateUserName) {
+      return "Username already exists";
+   } else {
+      return "Something went wrong";
+   }
+};
 // eslint-disable-next-line import/no-anonymous-default-export
 export default function (state = initialState, action) {
    const { type, payload } = action;
@@ -47,10 +55,7 @@ export default function (state = initialState, action) {
          return {
             ...state,
             userSignupCompleted: false,
-            signupErrorMessage:
-               payload === "Network Error"
-                  ? payload
-                  : payload.email || payload.name || payload.password,
+            signupErrorMessage: errorhandler(payload),
          };
       case LOGIN_SUCCESS:
          return {

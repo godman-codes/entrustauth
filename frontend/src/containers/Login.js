@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Content, Wrapper } from "../components/Signup/Signup.styles";
 import TorokoboImage from "../images/torokobo.jpg";
 import { connect } from "react-redux";
@@ -94,7 +94,7 @@ const Login = ({ login, initialLogin, initialLoginErrorMessage, user }) => {
             </form>
             <div id="login">
                <p>Don't have an account?</p>&nbsp;
-               <a href="/signup">SignUp</a>
+               <Link to="/signup">SignUp</Link>
                {/* {console.log("updated")} */}
             </div>
          </Content>

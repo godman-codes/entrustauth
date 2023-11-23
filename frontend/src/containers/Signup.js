@@ -3,29 +3,42 @@ import { Content, Wrapper } from "../components/Signup/Signup.styles";
 import Snackbar from "../components/Snackbar";
 import { connect } from "react-redux";
 import { signup } from "../actions/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TorokoboImage from "../images/torokobo.jpg";
 
 const Signup = ({ signup, signupErrorMessage, userSignupCompleted }) => {
    const [showSnackbar, setShowSnackbar] = useState(false);
+   const [loading, setLoading] = useState(false);
    const [showPasswordError, setShowPasswordError] = useState(false);
    const [formData, setFormData] = useState({
       email: "",
-      name: "",
+      first_name: "",
       password: "",
       re_password: "",
+      last_name: "",
+      username: "",
    });
    const navigate = useNavigate();
-   const { name, email, password, re_password } = formData;
+   const { first_name, last_name, username, email, password, re_password } =
+      formData;
    const onchange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
    };
 
-   const onSubmit = (e) => {
+   const onSubmit = async (e) => {
       e.preventDefault();
       if (password === re_password) {
          setShowPasswordError(false);
-         signup(name, email, password, re_password);
+         setLoading(true);
+         await signup(
+            first_name,
+            last_name,
+            username,
+            email,
+            password,
+            re_password
+         );
+         setLoading(false);
          console.log(signupErrorMessage);
          console.log(userSignupCompleted);
       } else {
@@ -59,13 +72,33 @@ const Signup = ({ signup, signupErrorMessage, userSignupCompleted }) => {
             </div>
             <form onSubmit={(e) => onSubmit(e)}>
                <div className="form-group">
-                  <label>Name</label>
+                  <label>First Name</label>
                   <input
                      type="text"
-                     name="name"
+                     name="first_name"
                      className="inputs"
-                     placeholder="Your name"
-                     value={name}
+                     placeholder="First Name"
+                     value={first_name}
+                     onChange={(e) => onchange(e)}
+                     required
+                  />
+                  <label>Last Name</label>
+                  <input
+                     type="text"
+                     name="last_name"
+                     className="inputs"
+                     placeholder="Last Name"
+                     value={last_name}
+                     onChange={(e) => onchange(e)}
+                     required
+                  />
+                  <label>Username</label>
+                  <input
+                     type="text"
+                     name="username"
+                     className="inputs"
+                     placeholder="Username"
+                     value={username}
                      onChange={(e) => onchange(e)}
                      required
                   />
@@ -117,12 +150,16 @@ const Signup = ({ signup, signupErrorMessage, userSignupCompleted }) => {
                   </p>
                </div>
                <button type="submit" id="submit-button">
-                  Create an account
+                  {loading ? (
+                     <div className="loading-spinner"></div>
+                  ) : (
+                     "Create an account"
+                  )}
                </button>
             </form>
             <div id="login">
                <p>Already have an account?</p>&nbsp;
-               <a href="/login">Login</a>
+               <Link to="/login">Login</Link>
                {/* {console.log("updated")} */}
             </div>
          </Content>
